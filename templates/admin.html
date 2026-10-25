@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+<h2>System Administration &amp; Airline Metrics</h2>
+<p>Live summary computed from schedules, bookings, tickets, payments and crew tables.</p>
+
+<div class="stats-grid">
+  <div class="stat-card"><h3>Active Flights</h3><p>{{ stats.active_flights }}</p></div>
+  <div class="stat-card"><h3>Total Bookings</h3><p>{{ stats.total_bookings }}</p></div>
+  <div class="stat-card"><h3>Tickets Issued</h3><p>{{ stats.tickets_issued }}</p></div>
+  <div class="stat-card"><h3>Total Revenue</h3><p>&#8377;{{ '{:,.0f}'.format(stats.revenue) }}</p></div>
+  <div class="stat-card"><h3>Active Crew</h3><p>{{ stats.active_crew }}</p></div>
+  <div class="stat-card"><h3>Delayed / Cancelled</h3><p>{{ stats.disrupted }}</p></div>
+</div>
+
+<div class="card">
+  <h3>Revenue by Route (<code>flights</code> &rarr; <code>bookings</code> &rarr; <code>payments</code>)</h3>
+  <table>
+    <thead>
+      <tr><th>Flight</th><th>Route</th><th>Bookings</th><th>Passengers</th><th>Revenue (&#8377;)</th></tr>
+    </thead>
+    <tbody>
+      {% for r in routes %}
+      <tr>
+        <td><strong>{{ r.flight_number }}</strong></td>
+        <td>{{ r.route }}</td>
+        <td>{{ r.bookings }}</td>
+        <td>{{ r.passengers }}</td>
+        <td>&#8377;{{ '{:,.2f}'.format(r.revenue) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="card">
+  <h3>Recent Payment Transactions (<code>payments</code> table)</h3>
+  <table>
+    <thead>
+      <tr><th>Transaction Ref</th><th>PNR</th><th>Amount (&#8377;)</th><th>Method</th><th>Status</th></tr>
+    </thead>
+    <tbody>
+      {% for p in payments %}
+      <tr>
+        <td>{{ p.transaction_ref }}</td>
+        <td>{{ p.pnr }}</td>
+        <td>&#8377;{{ '{:,.2f}'.format(p.amount) }}</td>
+        <td>{{ p.payment_method }}</td>
+        <td><span class="badge {{ p.status|lower }}">{{ p.status }}</span></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

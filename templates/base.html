@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}SkyWay Airline Management{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header>
+    <div class="nav-container">
+      <h1><span class="logo">&#9992;</span> SkyWay Airline Management</h1>
+      <nav>
+        <a href="{{ url_for('index') }}" class="{{ 'active' if request.endpoint == 'index' }}">Home</a>
+        <a href="{{ url_for('flights') }}" class="{{ 'active' if request.endpoint == 'flights' }}">Flights &amp; Crew</a>
+        <a href="{{ url_for('bookings') }}" class="{{ 'active' if request.endpoint == 'bookings' }}">Bookings &amp; Payments</a>
+        <a href="{{ url_for('admin') }}" class="{{ 'active' if request.endpoint == 'admin' }}">Admin Dashboard</a>
+      </nav>
+    </div>
+  </header>
+  <main class="container">
+    {% with messages = get_flashed_messages() %}
+      {% for m in messages %}<div class="flash">{{ m }}</div>{% endfor %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+  <footer>
+    <p>&copy; 2026 Airline Management System | Academic Case Study Project</p>
+  </footer>
+</body>
+</html>

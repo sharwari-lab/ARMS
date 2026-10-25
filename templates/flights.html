@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Flights &amp; Crew{% endblock %}
+{% block content %}
+<div class="card">
+  <h2>Flight Schedules, Fleet &amp; Crew Roster</h2>
+  <p>Joined from the <code>flights</code>, <code>flight_schedules</code>, <code>aircraft</code>,
+     <code>crew_assignments</code> and <code>crew_members</code> tables.</p>
+  <table>
+    <thead>
+      <tr>
+        <th>Flight</th><th>Route</th><th>Date</th><th>Gate</th><th>Aircraft</th>
+        <th>Seats Booked</th><th>Assigned Crew</th><th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for s in schedules %}
+      <tr>
+        <td><strong>{{ s.flight_number }}</strong></td>
+        <td class="route">{{ s.route }}</td>
+        <td>{{ s.flight_date.strftime('%d %b') }}</td>
+        <td>{{ s.gate or '-' }}</td>
+        <td>{{ s.registration_no }}<br><small>{{ s.aircraft_model }}</small></td>
+        <td>{{ s.seats_booked }} / {{ s.total_seats }}</td>
+        <td class="tools">{{ s.crew or 'Not yet assigned' }}</td>
+        <td><span class="badge {{ s.status|lower }}">{{ s.status }}</span></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

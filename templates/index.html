@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block title %}Home - Flight Search{% endblock %}
+{% block content %}
+<div class="card">
+  <h2>Search Flights</h2>
+  <p>Find scheduled flights between airports stored in the database.</p>
+  <form method="GET" action="{{ url_for('index') }}" class="search-form">
+    <div class="form-group">
+      <label for="source">From</label>
+      <select name="source" id="source">
+        <option value="">Any Origin</option>
+        {% for a in airports %}
+        <option value="{{ a.iata_code }}" {{ 'selected' if a.iata_code == source }}>{{ a.iata_code }} - {{ a.city }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="dest">To</label>
+      <select name="dest" id="dest">
+        <option value="">Any Destination</option>
+        {% for a in airports %}
+        <option value="{{ a.iata_code }}" {{ 'selected' if a.iata_code == dest }}>{{ a.iata_code }} - {{ a.city }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="date">Travel Date</label>
+      <input type="date" name="date" id="date" value="{{ date }}">
+    </div>
+    <div class="form-group">
+      <button type="submit" class="btn-primary">Search Flights</button>
+    </div>
+  </form>
+</div>
+
+<div class="card">
+  <h3>{{ results|length }} flight(s) available</h3>
+  <table>
+    <thead>
+      <tr><th>Flight</th><th>Route</th><th>Date</th><th>Departs</th><th>Arrives</th>
+          <th>Fare from (&#8377;)</th><th>Seats Left</th><th>Status</th></tr>
+    </thead>
+    <tbody>
+      {% for r in results %}
+      <tr>
+        <td><strong>{{ r.flight_number }}</strong></td>
+        <td class="route">{{ r.origin }} &rarr; {{ r.dest }}</td>
+        <td>{{ r.flight_date.strftime('%d %b %Y') }}</td>
+        <td>{{ r.departure_time.strftime('%H:%M') }}</td>
+        <td>{{ r.arrival_time.strftime('%H:%M') }}</td>
+        <td>&#8377;{{ '{:,.0f}'.format(r.base_fare) }}</td>
+        <td>{{ r.seats_left }}</td>
+        <td><span class="badge {{ r.status|lower }}">{{ r.status }}</span></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

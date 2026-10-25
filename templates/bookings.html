@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}Bookings &amp; Payments{% endblock %}
+{% block content %}
+<div class="card">
+  <h2>Passenger Bookings &amp; PNR Ledger</h2>
+  <p>Reservations linked across <code>bookings</code>, <code>tickets</code>, <code>passengers</code>
+     and <code>payments</code> tables.</p>
+  <form method="GET" class="filter-row">
+    <input type="text" name="pnr" value="{{ pnr_query }}" placeholder="Search by PNR (e.g. SW6A1003)">
+    <button class="btn-primary">Filter PNR</button>
+  </form>
+  <table>
+    <thead>
+      <tr>
+        <th>PNR</th><th>Booked By</th><th>Flight</th><th>Date</th><th>Class</th>
+        <th>Travellers [Seat]</th><th>Fare (&#8377;)</th><th>Payment</th><th>Status</th><th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for b in bookings %}
+      <tr>
+        <td><strong>{{ b.pnr }}</strong></td>
+        <td>{{ b.booked_by }}</td>
+        <td>{{ b.flight_number }}<br><small>{{ b.route }}</small></td>
+        <td>{{ b.flight_date.strftime('%d %b') }}</td>
+        <td>{{ b.travel_class }}</td>
+        <td class="tools">{{ b.travellers }}</td>
+        <td>&#8377;{{ '{:,.2f}'.format(b.total_fare) }}</td>
+        <td><span class="badge {{ (b.payment_status or '')|lower }}">{{ b.payment_status or '-' }}</span></td>
+        <td><span class="badge {{ b.status|lower }}">{{ b.status }}</span></td>
+        <td>
+          {% if b.status == 'Confirmed' %}
+          <form method="POST" action="{{ url_for('bookings') }}">
+            <input type="hidden" name="pnr" value="{{ b.pnr }}">
+            <button class="btn-link">Cancel</button>
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
